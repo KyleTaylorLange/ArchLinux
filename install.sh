@@ -38,20 +38,21 @@ read -p "Press [enter] to continue!"
 # Hardcoded for now to avoid fat fingering (same reason I called it called MAIN instead of ROOT).
 BOOT_PARTITION=/dev/nvme0n1p6
 MAIN_PARTITION=/dev/nvme0n1p7
-#HOME_PARTITION=/dev/nvme0n1p8
+HOME_PARTITION=/dev/nvme0n1p8
 #SWAP_PARTITION=/dev/nvme0n1p8
 
 mkfs.fat -F32 $BOOT_PARTITION
 mkfs.ext4 $MAIN_PARTITION
+mkfs.ext4 $HOME_PARTITION
 
+mount $MAIN_PARTITION /mnt
 ## Encrpyption commands from tutorial
 if [ "$ENCRYPT_OPTION" != "n" ]; then
-  cryptsetup luksFormat $MAIN_PARTITION
+  cryptsetup luksFormat $HOME_PARTITION
   echo "Enter password again to open partition:"
-  cryptsetup open --type luks $MAIN_PARTITION lvm
+  cryptsetup open --type luks $HOME_PARTITION lvm
   pvcreate /dev/mapper/lvm
   vgcreate volgroup0 /dev/mapper/lvm
-  lvcreate -L 30GB volgroup0 -n lv_root
   lvcreate -l 100%FREE volgroup0 -n lv_home
   vgdisplay
   lvdisplay
@@ -60,10 +61,9 @@ if [ "$ENCRYPT_OPTION" != "n" ]; then
   vgchange -ay
   mkfs.ext4 /dev/volgroup0/lv_root
   mkfs.ext4 /dev/volgroup0/lv_home
-  mount /dev/volgroup0/lv_root /mnt
   mount --mkdir /dev/volgroup0/lv_home /mnt/home
 else
-  mount $MAIN_PARTITION /mnt
+  mount $HOME_PARTITION /mnt
 fi
 mount --mkdir $BOOT_PARTITION /mnt/boot
 
@@ -112,7 +112,8 @@ pacman -S amd-ucode --noconfirm
 #AMD GPU
 pacman -S mesa libva-mesa-driver vulkan-radeon --noconfirm
 #NVIDIA GPU (nvidia for regular kernel, nvidia-lts for the lts kernel)
-pacman -S nvidia nvidia-lts nvidia-utils --noconfirm --needed
+#pacman -S nvidia nvidia-lts nvidia-utils --noconfirm --needed
+pacman -S vulkan-nouveau xf86-video-nouveau xorg-xinit
 
 pacman -S phonon-qt6-vlc
 echo "Installing KDE Plasma"
@@ -169,7 +170,7 @@ ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 hwclock --systohc
 
 #echo "Installing GRUB"
-mount --mkdir $BOOT_PARTITION /boot/efi
+#mount --mkdir $BOOT_PARTITION /boot/efi
 pacman -S grub efibootmgr os-prober --noconfirm --needed
 grub-install --target=x86_64-efi --bootloader-id=GRUB
 # TODO: keys for GRUB?
