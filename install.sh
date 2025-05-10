@@ -113,6 +113,16 @@ pacman -S mesa libva-mesa-driver vulkan-radeon --noconfirm
 #NVIDIA GPU (nvidia for regular kernel, nvidia-lts for the lts kernel)
 pacman -S nvidia nvidia-lts nvidia-utils --noconfirm --needed
 
+echo "Installing and enabling important drivers and SDDM"
+pacman -S iwd networkmanager sddm pipewire pipewire-jack pipewire-pulse openrgb --noconfirm --needed
+systemctl enable sddm.service
+systemctl enable NetworkManager.service
+
+if [ "$BLUETOOTH_OPTION" != "n" ]; then
+  pacman -S bluez bluez-utils --noconfirm --needed
+  systemctl enable bluetooth.service
+fi
+
 pacman -S phonon-qt6-vlc
 echo "Installing KDE Plasma"
 # kde-workspace may be optional
@@ -185,16 +195,6 @@ nano /etc/default/grub
 
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 grub-mkconfig -o /boot/grub/grub.cfg
-
-echo "Installing and enabling important drivers and SDDM"
-pacman -S iwd networkmanager sddm pipewire openrgb --noconfirm --needed
-systemctl enable sddm.service
-systemctl enable NetworkManager.service
-
-if [ "$BLUETOOTH_OPTION" != "n" ]; then
-  pacman -S bluez bluez-utils --noconfirm --needed
-  systemctl enable bluetooth.service
-fi
 
 if [ "$EXTRA_GAMES_OPTION" != "n" ]; then
   pacman -S konquest ksudoku kspaceduel pingus --noconfirm --needed
