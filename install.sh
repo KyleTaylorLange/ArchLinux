@@ -65,6 +65,7 @@ if [ "$ENCRYPT_OPTION" != "n" ]; then
 else
   mount $MAIN_PARTITION /mnt
 fi
+mount --mkdir /dev/nvme0n1p6 /mnt/boot
 
 if [ -n "$SWAP_PARTITION" ]; then
   mkswap $SWAP_PARTITION
