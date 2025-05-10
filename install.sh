@@ -65,7 +65,6 @@ if [ "$ENCRYPT_OPTION" != "n" ]; then
 else
   mount $MAIN_PARTITION /mnt
 fi
-mount --mkdir $BOOT_PARTITION /mnt/boot
 
 if [ -n "$SWAP_PARTITION" ]; then
   mkswap $SWAP_PARTITION
@@ -153,12 +152,15 @@ if [ "$ENCRYPT_OPTION" != "n" ]; then
   sed -i 's|block filesystems|block encrypt lvm2 filesystems|g' /etc/mkinitcpio.conf
 fi
 
+# Install Plymouth (splash screen between GRUB and SDDM)
+pacman -S plymouth --noconfirm --needed
+sed -i 's|udev autodetect|udev plymouth autodetect|g' /etc/mkinitcpio.conf
+
 ## Init kernel
 mkinitcpio -p linux
 mkinitcpio -p linux-lts
 
 #echo "Uncomment US English (for Steam) and any other desired locales."
-#nano /etc/locale.gen
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
 
@@ -172,7 +174,7 @@ hwclock --systohc
 mount --mkdir $BOOT_PARTITION /boot/efi
 pacman -S grub efibootmgr os-prober --noconfirm --needed
 grub-install --target=x86_64-efi --bootloader-id=GRUB
-# TODO: keys for GRUB?
+# TODO: TPM keys for GRUB?
 # grub-install --target=x86_64-efi --efi-directory=esp --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
 if [ "$ENCRYPT_OPTION" != "n" ]; then
   sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 cryptdevice=$MAIN_PARTITION:volgroup0 quiet"|g' /etc/default/grub
