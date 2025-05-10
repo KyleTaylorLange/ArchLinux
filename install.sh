@@ -141,7 +141,8 @@ if [ "$GNOME_OPTION" != "n" ]; then
 fi
 
 if [ "$HYPRLAND_OPTION" != "n" ]; then
-  pacman -S hyprland kitty
+  echo "Installing Hyprland"
+  pacman -S hyprland kitty --noconfirm --needed
 fi
 
 if [ "$OPENSSH_OPTION" != "n" ]; then
