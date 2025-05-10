@@ -174,7 +174,7 @@ mkinitcpio -p linux-lts
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
 
-# us-acentos is the US International eyboard layout
+# us-acentos is the US International keyboard layout
 echo "KEYMAP=us-acentos" >> /etc/vconsole.conf
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
@@ -186,12 +186,13 @@ pacman -S grub efibootmgr os-prober --noconfirm --needed
 grub-install --target=x86_64-efi --bootloader-id=GRUB
 # TODO: TPM keys for GRUB?
 # grub-install --target=x86_64-efi --efi-directory=esp --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
+# Add splash for Plymouth and cryptdevice if encryption is enabled.
+sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet splash"|g' /etc/default/grub
 if [ "$ENCRYPT_OPTION" != "n" ]; then
-  sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 cryptdevice=$MAIN_PARTITION:volgroup0 quiet"|g' /etc/default/grub
+  sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 cryptdevice=$MAIN_PARTITION:volgroup0 quiet|g' /etc/default/grub
 fi
 # enable OS_PROBER for dual boot
 sed -i 's|^#GRUB_DISABLE_OS_PROBER=false|GRUB_DISABLE_OS_PROBER=false|g' /etc/default/grub
-nano /etc/default/grub
 
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 grub-mkconfig -o /boot/grub/grub.cfg
