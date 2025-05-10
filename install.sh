@@ -152,7 +152,7 @@ fi
 # Other useful applications
 pacman -S firefox vlc --noconfirm --needed
 # Developer apps
-pacman -S gcc rustup code --noconfirm --needed
+pacman -S gcc rustup npm clang code --noconfirm --needed
 
 if [ "$ENCRYPT_OPTION" != "n" ]; then
   pacman -S lvm2 --noconfirm
@@ -202,11 +202,10 @@ if [ "$EXTRA_GAMES_OPTION" != "n" ]; then
 fi
 
 if [ "$STEAM_OPTION" != "n" ]; then
-  echo "Uncomment the multilib repository for Steam."
-  sed -i 's|^#[multilib]\n#Include = /etc/pacman.d/mirrorlist/|[multilib]\nInclude = /etc/pacman.d/mirrorlist/|g' /etc/pacman.conf
-  nano /etc/pacman.conf
-  #[multilib]
-  #Include = /etc/pacman.d/mirrorlist
+  echo "Installing Steam and dependencies."
+  # TODO: The below could be done more cleanly with another command.
+  # It currently adds a new Include line instead of uncommenting the exisitng one.
+  sed -i 's|^#\[multilib\]|\[multilib\]\nInclude = /etc/pacman.d/mirrorlist/\n|g' /etc/pacman.conf
   pacman -Sy
   # Steam needs 32-bit graphics drivers
   pacman -S lib32-vulkan-radeon --noconfirm --needed
