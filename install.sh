@@ -224,8 +224,9 @@ fi
 # HERE
 # systemFavorites=suspend\\,hibernate\\,reboot\\,shutdown
 
+mkdir /home/$USERNAME/Downloads
+curl -o /home/$USERNAME/Downloads/user.sh https://raw.githubusercontent.com/KyleTaylorLange/ArchLinux/refs/heads/main/user.sh
 # TO TRY: can this be run here?
-#plasma-apply-lookandfeel -a org.kde.breezedark.desktop
 # Command if user:
 # sed -i 's/org.kde.plasma.kickoff/org.kde.plasmakickerdash/g' ~/.config/plasma-org.kde.plasma.desktop-appletsrc
 # Can't do this, sadly.
