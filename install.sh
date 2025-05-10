@@ -65,7 +65,7 @@ if [ "$ENCRYPT_OPTION" != "n" ]; then
 else
   mount $HOME_PARTITION /mnt
 fi
-mount --mkdir $BOOT_PARTITION /mnt/boot
+#mount --mkdir $BOOT_PARTITION /mnt/boot
 
 if [ -n "$SWAP_PARTITION" ]; then
   mkswap $SWAP_PARTITION
@@ -170,13 +170,13 @@ ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 hwclock --systohc
 
 #echo "Installing GRUB"
-#mount --mkdir $BOOT_PARTITION /boot/efi
+mount --mkdir $BOOT_PARTITION /boot/efi
 pacman -S grub efibootmgr os-prober --noconfirm --needed
 grub-install --target=x86_64-efi --bootloader-id=GRUB
 # TODO: keys for GRUB?
 # grub-install --target=x86_64-efi --efi-directory=esp --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
 if [ "$ENCRYPT_OPTION" != "n" ]; then
-  sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT="loglevel 3 quiet"|GRUB_CMDLINE_LINUX_DEFAULT="loglevel 3 cryptdevice=$HOME_PARTITION:volgroup0 quiet"|g' /etc/default/grub
+  sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"|GRUB_CMDLINE_LINUX_DEFAULT="loglevel 3 cryptdevice=$HOME_PARTITION:volgroup0 quiet"|g' /etc/default/grub
 fi
 # enable OS_PROBER for dual boot
 sed -i 's|^#GRUB_DISABLE_OS_PROBER=false|GRUB_DISABLE_OS_PROBER=false|g' /etc/default/grub
