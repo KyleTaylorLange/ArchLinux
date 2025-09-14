@@ -155,7 +155,7 @@ fi
 # Other useful applications
 pacman -S firefox vlc --noconfirm --needed
 # Developer apps
-pacman -S gcc rustup npm clang code --noconfirm --needed
+pacman -S gcc rustup npm clang cmake dotnet-runtime --noconfirm --needed
 
 if [ "$ENCRYPT_OPTION" != "n" ]; then
   pacman -S lvm2 --noconfirm
