@@ -157,6 +157,8 @@ fi
 pacman -S firefox vlc --noconfirm --needed
 # Developer apps
 pacman -S gcc rustup npm clang cmake dotnet-runtime --noconfirm --needed
+# Virtualization packages
+pacman -S qemu-full libvirt virt-manager
 
 if [ "$ENCRYPT_OPTION" != "n" ]; then
   pacman -S lvm2 --noconfirm
