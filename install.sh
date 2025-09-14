@@ -189,7 +189,7 @@ hwclock --systohc
 #echo "Installing GRUB"
 mount --mkdir $BOOT_PARTITION /boot/efi
 pacman -S grub efibootmgr os-prober --noconfirm --needed
-grub-install --target=x86_64-efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot/grub --bootloader-id=GRUB
 # TODO: TPM keys for GRUB?
 # grub-install --target=x86_64-efi --efi-directory=esp --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
 # Add splash for Plymouth and cryptdevice if encryption is enabled.
