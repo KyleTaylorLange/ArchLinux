@@ -128,7 +128,8 @@ pacman -S phonon-qt6-vlc
 echo "Installing KDE Plasma"
 # kde-workspace may be optional
 pacman -S plasma-meta konsole kate dolphin plasma-workspace
-
+# Install Flatpak; it should automatically integrate with Discover
+pacman -S flatpak
 
 if [ "$KDE_APPS_OPTION" != "n" ]; then
   pacman -S kde-applications
