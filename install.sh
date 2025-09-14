@@ -51,15 +51,16 @@ if [ "$ENCRYPT_OPTION" != "n" ]; then
   cryptsetup open --type luks $MAIN_PARTITION lvm
   pvcreate /dev/mapper/lvm
   vgcreate volgroup0 /dev/mapper/lvm
-  lvcreate -L 30GB volgroup0 -n lv_root
-  lvcreate -l 100%FREE volgroup0 -n lv_home
-  vgdisplay
-  lvdisplay
+  lvcreate -l 100%FREE volgroup0 -n lv_root
+  #lvcreate -L 30GB volgroup0 -n lv_root
+  #lvcreate -l 100%FREE volgroup0 -n lv_home
+  #vgdisplay
+  #lvdisplay
   modprobe dm_mod
   vgscan
   vgchange -ay
   mkfs.ext4 /dev/volgroup0/lv_root
-  mkfs.ext4 /dev/volgroup0/lv_home
+  #mkfs.ext4 /dev/volgroup0/lv_home
   mount /dev/volgroup0/lv_root /mnt
   mount --mkdir /dev/volgroup0/lv_home /mnt/home
 else
