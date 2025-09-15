@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pacman -S steam --noconfirm --needed
+pacman -S steam
 pacman -S flatpak --noconfirm --needed
 pacman -S firefox vlc --noconfirm --needed
 # Developer apps
