@@ -4,7 +4,7 @@ pacman -S steam --noconfirm --needed
 pacman -S flatpak --noconfirm --needed
 pacman -S firefox vlc --noconfirm --needed
 # Developer apps
-pacman -S git nano vim neovim
+pacman -S git nano vim neovim --noconfirm --needed
 pacman -S gcc rustup npm clang cmake dotnet-runtime --noconfirm --needed
 # Virtualization packages
 pacman -S qemu-full libvirt virt-manager --noconfirm --needed
