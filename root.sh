@@ -10,7 +10,7 @@ pacman -S gcc rustup npm clang cmake dotnet-runtime --noconfirm --needed
 pacman -S qemu-full libvirt virt-manager --noconfirm --needed
 # Extra KDE programs
 pacman -S partitionmanager kcalc gwenview --noconfirm --needed
-pacman -S konquest ksudoku kspaceduel pingus
+pacman -S konquest ksudoku kspaceduel pingus --noconfirm --needed
 
 # Install and enable Plymouth
 pacman -S plymouth --noconfirm --needed
