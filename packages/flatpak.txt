@@ -1,0 +1,8 @@
+com.discordapp.Discord
+com.protonvpn.www
+com.spotify.Client
+org.libreoffice.LibreOffice
+org.mozilla.Thunderbird
+org.telegram.desktop
+org.gimp.GIMP
+org.audacityteam.Audacity

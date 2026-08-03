@@ -1,0 +1,11 @@
+cachy-update
+cachyos-plymouth-theme
+lib32-opencl-mesa
+opencl-mesa
+openrgb
+perl-image-exiftool
+rdfind
+realtime-privileges
+shelly
+tesseract-data-eng
+ufw-extras

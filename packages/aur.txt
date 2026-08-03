@@ -1,0 +1,2 @@
+paru
+visual-studio-code-bin
