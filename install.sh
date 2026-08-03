@@ -79,6 +79,7 @@ if [ "$BOOL_FIX_KEYS" != "n" ]; then
   pacman-key --init
   pacman-key --populate
 fi
+pacman -Syy
 
 echo "Running Pacstrap"
 # dosfstools and mtools are needed for dealing with FAT32 filesystems
