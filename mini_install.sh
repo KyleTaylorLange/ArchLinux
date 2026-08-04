@@ -21,8 +21,8 @@ wipefs --all $BOOT_PARTITION
 wipefs --all $MAIN_PARTITION
 mkfs.fat -F32 $BOOT_PARTITION
 mkfs.btrfs $MAIN_PARTITION
+mount $MAIN_PARTITION /mnt
 mount --mkdir $BOOT_PARTITION /mnt/boot
-mount --mkdir $MAIN_PARTITION /mnt
 
 # Fix keyring/NTP issue and update packages.
 pacman-key --init
@@ -37,6 +37,9 @@ pacstrap -C /etc/pacman.conf -K /mnt base sudo linux-firmware mkinitcpio linux l
 
 # Useful utils for any fresh install
 pacstrap -C /etc/pacman.conf -K /mnt firefox nano vim git fastfetch flatpak --noconfirm --needed
+
+# Generate fstab after mount but before any chroot commands
+genfstab -U -p /mnt >> /mnt/etc/fstab
 
 # From original script; needed for locale-gen?
 # sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
@@ -101,10 +104,6 @@ arch-chroot -S /mnt chfn -f "$FULLNAME" $USERNAME
 # TODO: passwords
 # Hostname
 echo "$HOSTNAME" > /mnt/etc/hostname
-
-# TODO: Verify what genfstab command is ideal
-genfstab -pU -f /mnt /mnt
-#genfstab -U -p /mnt >> /mnt/etc/fstab
 
 # TODO: Graphics drivers for AMD (or NVIDIA)
 # Need libva-mesa-driver xf86-video-amdgpu too?
