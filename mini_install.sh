@@ -50,7 +50,7 @@ arch-chroot -S /mnt mkinitcpio -P
 # Limine bootloader
 pacstrap -C /etc/pacman.conf -K /mnt limine efibootmgr --noconfirm --needed
 mkdir -p /mnt/boot/EFI/arch-limine
-cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
+cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine/
 efibootmgr \
 --create \
 --disk $EFI_DISK \
