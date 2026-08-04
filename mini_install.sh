@@ -2,7 +2,7 @@
 
 # Prerequisites:
 # - [multilib] uncommented from /etc/pacman.conf in ISO
-# - Partitions made (but formatting isn't necessary)
+# - Partitions made
 
 # Values to change per install
 HOSTNAME=archlinux-test-script
@@ -10,9 +10,17 @@ USERNAME=kyle
 FULLNAME=Kyle
 BOOT_PARTITION=/dev/?
 MAIN_PARTITION=/dev/?
+# Disk that the boot partition is on, e.g. /dev/sdb
+EFI_DISK=/dev/?
+# Partition number for the boot partition, e.g. 1
+EFI_PART=?
 
+wipefs --all $BOOT_PARTITION
+wipefs --all $MAIN_PARTITION
 mkfs.fat -F32 $BOOT_PARTITION
 mkfs.btrfs $MAIN_PARTITION
+mount --mkdir $BOOT_PARTITION /mnt/boot
+mount --mkdir $MAIN_PARTITION /mnt
 
 # Fix keyring/NTP issue and update packages.
 pacman-key --init
@@ -39,7 +47,17 @@ arch-chroot -S /mnt mkinitcpio -P
 
 # Limine bootloader
 pacstrap -C /etc/pacman.conf -K /mnt limine efibootmgr --noconfirm --needed
-# TODO: setup limine.conf and run needed commands for efibootmgr
+mkdir -p /mnt/boot/EFI/arch-limine
+cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
+efibootmgr \
+--create \
+--disk $EFI_DISK \
+--part $EFI_PART \
+--label "Arch Linux" \
+--loader '\EFI\arch-limine\BOOTX64.EFI' \
+--unicode
+# TODO: setup limine.conf in more detail
+cat limine.conf > /mnt/boot/limine.conf
 
 # Fonts
 pacstrap -C /etc/pacman/conf -K /mnt noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-liberation ttf-dejavu --noconfirm --needed
@@ -71,7 +89,7 @@ systemctl --root=/mnt enable plasmalogin
 pacstrap -C /etc/pacman.conf -K /mnt openssh --noconfirm --needed
 systemctl --root=/mnt enable sshd
 
-# TODO: Time zone?
+# Time Zone
 arch-chroot -S /mnt ln -s /usr/share/zoneinfo/US/Pacific /etc/localtime
 systemctl --root=/mnt enable systemd-timesyncd
 
@@ -106,4 +124,4 @@ echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
 # hwclock --systohc
 
 echo "Install script finished!"
-echo "TODO: set passwords, uncomment wheel from /etc/sudoers, verify EFI
+echo "TODO: set passwords, uncomment wheel from /etc/sudoers, verify EFI, umount before exit"
