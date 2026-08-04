@@ -95,7 +95,7 @@ systemctl --root=/mnt enable systemd-timesyncd
 
 # Users
 arch-chroot -S /mnt useradd -m -g users -G wheel $USERNAME
-arch-chroot -S /mnt chfm -f "$FULLNAME" $USERNAME
+arch-chroot -S /mnt chfn -f "$FULLNAME" $USERNAME
 # TODO: passwords
 # Hostname
 echo "$HOSTNAME" > /mnt/etc/hostname
