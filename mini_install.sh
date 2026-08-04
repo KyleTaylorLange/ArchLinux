@@ -4,6 +4,8 @@
 # - [multilib] uncommented from /etc/pacman.conf in ISO
 # - Partitions made
 
+SECONDS=0
+
 # Values to change per install
 HOSTNAME=archlinux-test-script
 USERNAME=kyle
@@ -123,5 +125,5 @@ echo "KEYMAP=us-acentos" >> /mnt/etc/vconsole.conf
 echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
 # hwclock --systohc
 
-echo "Install script finished!"
+echo "Install script finished in $SECONDS seconds!"
 echo "TODO: set passwords, uncomment wheel from /etc/sudoers, verify EFI, umount before exit"
