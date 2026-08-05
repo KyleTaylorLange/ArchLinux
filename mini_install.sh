@@ -47,7 +47,7 @@ mkfs.btrfs -f /dev/$VOLGROUP_NAME/lv_root
 mount --mkdir /dev/$VOLGROUP_NAME/lv_root /mnt/arch_btrfs
 btrfs subvolume create -p /mnt/arch_btrfs/@
 chattr +c /mnt/arch_btrfs/@
-btrfs subvolume create -p /mnt/@arch_btrfs/home
+btrfs subvolume create -p /mnt/arch_btrfs/@home
 chattr +c /mnt/arch_btrfs/@home
 btrfs subvolume create -p /mnt/arch_btrfs/@root
 chattr +c /mnt/arch_btrfs/@root
@@ -65,14 +65,14 @@ umount /mnt/arch_btrfs
 
 lvchange -a y /dev/@VOLGROUP_NAME/lv_root
 # vgchange -ay -- appears in original script
-mount -o compress=zstd,subvol=@ /dev/$VOLGROUP_NAME/lv_root /mnt
-mount -o compress=zstd,subvol=@home /dev/$VOLGROUP_NAME/lv_root /mnt/home
-mount -o compress=zstd,subvol=@root /dev/$VOLGROUP_NAME/lv_root /mnt/root
-mount -o compress=zstd,subvol=@srv /dev/$VOLGROUP_NAME/lv_root /mnt/srv
-mount -o compress=zstd,subvol=@cache /dev/$VOLGROUP_NAME/lv_root /mnt/var/cache
+mount --mkdir -o compress=zstd,subvol=@ /dev/$VOLGROUP_NAME/lv_root /mnt
+mount --mkdir -o compress=zstd,subvol=@home /dev/$VOLGROUP_NAME/lv_root /mnt/home
+mount --mkdir -o compress=zstd,subvol=@root /dev/$VOLGROUP_NAME/lv_root /mnt/root
+mount --mkdir -o compress=zstd,subvol=@srv /dev/$VOLGROUP_NAME/lv_root /mnt/srv
+mount --mkdir -o compress=zstd,subvol=@cache /dev/$VOLGROUP_NAME/lv_root /mnt/var/cache
 #mount -o compress=zstd,subvol=@pkg /dev/$VOLGROUP_NAME/lv_root /mnt/var/cache/pacman/pkg
-mount -o compress=zstd,subvol=@tmp /dev/$VOLGROUP_NAME/lv_root /mnt/var/tmp
-mount -o compress=zstd,subvol=@log /dev/$VOLGROUP_NAME/lv_root /mnt/var/log
+mount --mkdir -o compress=zstd,subvol=@tmp /dev/$VOLGROUP_NAME/lv_root /mnt/var/tmp
+mount --mkdir -o compress=zstd,subvol=@log /dev/$VOLGROUP_NAME/lv_root /mnt/var/log
 
 ## Encryption attempt ends here
 
