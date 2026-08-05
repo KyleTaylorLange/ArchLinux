@@ -180,5 +180,10 @@ echo "KEYMAP=us-acentos" >> /mnt/etc/vconsole.conf
 echo "LANG=en_US.UTF-8" >> /mnt/etc/locale.conf
 # hwclock --systohc
 
+# Create Git directory and clone this repo to finish installation.
+mkdir /mnt/home/$USERNAME/Git
+arch-chroot -C git clone https://www.github.com/KyleTaylorLange/ArchLinux.git /home/$USERNAME/Git/ArchLinux
+arch-chroot -C /mnt chown -R $USERNAME Git
+
 echo "Install script finished in $SECONDS seconds!"
 echo "TODO: set passwords, uncomment wheel from /etc/sudoers, verify EFI, umount before exit"
