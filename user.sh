@@ -2,6 +2,7 @@
 
 # This file contains commands to be run after rebooting the computer after reinstall and logging in.
 plasma-apply-lookandfeel -a org.kde.breezedark.desktop
+plasma-apply-wallpaperimage /usr/share/wallpapers/MilkyWay/contents/images/5120x2880.png
 flatpak install flathub com.discordapp.Discord -y
 flatpak install flathub com.spotify.Client -y
 flatpak install flathub org.gimp.GIMP -y
