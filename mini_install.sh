@@ -16,13 +16,69 @@ MAIN_PARTITION=/dev/?
 EFI_DISK=/dev/?
 # Partition number for the boot partition, e.g. 1
 EFI_PART=?
+VOLGROUP_NAME=KyleinstallVg
 
 wipefs --all $BOOT_PARTITION
 wipefs --all $MAIN_PARTITION
 mkfs.fat -F32 $BOOT_PARTITION
-mkfs.btrfs $MAIN_PARTITION
-mount $MAIN_PARTITION /mnt
-mount --mkdir $BOOT_PARTITION /mnt/boot
+#mkfs.btrfs $MAIN_PARTITION
+
+## Encryption attempt starts here
+
+cryptsetup --type luks2 luksFormat $MAIN_PARTITION
+echo "Enter password again to open partition:"
+cryptsetup open --type luks2 $MAIN_PARTITION lvm
+pvcreate -f --yes /dev/mapper/lvm
+vgcreate --yes --force $VOLGROUP_NAME /dev/mapper/lvm
+lvcreate --yes -l 100%FREE $VOLGROUP_NAME -n lv_root
+mkfs.btrfs -f /dev/$VOLGROUP_NAME/lv_root
+
+# BTRFS Subvolumes used by CachyOS
+#Subvol @ = /
+#Subvol @home = /home
+#Subvol @root = /root
+#Subvol @srv = /srv
+#Subvol @cache = /var/cache
+#Subvol @tmp = /var/tmp
+#Subvol @log = /var/log
+# Archinstall adds @pkg and keeps @, @home, @log - @pkg looks like a more narrow @cache
+
+# TODO: Can the mount be avoided by just writing "btrfs subvolume create -p /dev/$VOLGROUP_NAME/lv_root"?
+mount /dev/$VOLGROUP_NAME/lv_root
+btrfs subvolume create -p /mnt/arch_btrfs/@
+chattr +c /mnt/arch_btrfs/@
+btrfs subvolume create -p /mnt/@arch_btrfs/home
+chattr +c /mnt/arch_btrfs/@home
+btrfs subvolume create -p /mnt/arch_btrfs/@root
+chattr +c /mnt/arch_btrfs/@root
+btrfs subvolume create -p /mnt/arch_btrfs/@srv
+chattr +c /mnt/arch_btrfs/@srv
+btrfs subvolume create -p /mnt/arch_btrfs/@cache
+chattr +c /mnt/arch_btrfs/@cache
+#btrfs subvolume create -p /mnt/arch_btrfs/@pkg
+#chattr +c /mnt/arch_btrfs/@pkg
+btrfs subvolume create -p /mnt/arch_btrfs/@tmp
+chattr +c /mnt/arch_btrfs/@tmp
+btrfs subvolume create -p /mnt/arch_btrfs/@log
+chattr +c /mnt/arch_btrfs/@log
+umount /mnt/arch_btrfs
+
+lvchange -a y /dev/@VOLGROUP_NAME/lv_root
+# vgchange -ay -- appears in original script
+mount -o compress=zstd,subvol=@ /dev/$VOLGROUP_NAME/lv_root /mnt
+mount -o compress=zstd,subvol=@home /dev/$VOLGROUP_NAME/lv_root /mnt/home
+mount -o compress=zstd,subvol=@root /dev/$VOLGROUP_NAME/lv_root /mnt/root
+mount -o compress=zstd,subvol=@srv /dev/$VOLGROUP_NAME/lv_root /mnt/srv
+mount -o compress=zstd,subvol=@cache /dev/$VOLGROUP_NAME/lv_root /mnt/var/cache
+#mount -o compress=zstd,subvol=@pkg /dev/$VOLGROUP_NAME/lv_root /mnt/var/cache/pacman/pkg
+mount -o compress=zstd,subvol=@tmp /dev/$VOLGROUP_NAME/lv_root /mnt/var/tmp
+mount -o compress=zstd,subvol=@log /dev/$VOLGROUP_NAME/lv_root /mnt/var/log
+
+## Encryption attempt ends here
+
+#mount $MAIN_PARTITION /mnt
+#mount --mkdir $BOOT_PARTITION /mnt/boot
+mount --mkdir -o fmask=0077,dmask=0077 $BOOT_PARTITION /mnt/boot
 
 # Fix keyring/NTP issue and update packages.
 pacman-key --init
