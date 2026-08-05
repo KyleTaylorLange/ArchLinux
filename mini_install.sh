@@ -44,7 +44,7 @@ mkfs.btrfs -f /dev/$VOLGROUP_NAME/lv_root
 # Archinstall adds @pkg and keeps @, @home, @log - @pkg looks like a more narrow @cache
 
 # TODO: Can the mount be avoided by just writing "btrfs subvolume create -p /dev/$VOLGROUP_NAME/lv_root"?
-mount /dev/$VOLGROUP_NAME/lv_root
+mount --mkdir /dev/$VOLGROUP_NAME/lv_root /mnt/arch_btrfs
 btrfs subvolume create -p /mnt/arch_btrfs/@
 chattr +c /mnt/arch_btrfs/@
 btrfs subvolume create -p /mnt/@arch_btrfs/home
