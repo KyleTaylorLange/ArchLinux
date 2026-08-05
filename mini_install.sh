@@ -139,7 +139,7 @@ pacstrap -C /etc/pacman.conf -K /mnt ufw --noconfirm --needed
 systemctl --root=/mnt enable ufw.service
 
 # Plasma Desktop and Apps
-pacstrap -C /etc/pacman.conf -K /mnt plasma-meta --noconfirm --needed
+pacstrap -C /etc/pacman.conf -K /mnt plasma-meta plasma-workspace-wallpapers --noconfirm --needed
 pacstrap -C /etc/pacman.conf -K /mnt konsole dolphin discover kcalc partitionmanager --noconfirm --needed
 
 # Plasma Login Manager
